@@ -77,21 +77,14 @@
   .theme-toggle:hover { background: rgba(255, 255, 255, 0.3); }
 #glow-cursor {
   position: fixed;
-  width: 32px;
-  height: 32px;
-  border: 2px solid #00faff;
+  width: 10px;
+  height: 10px;
+  background: #00ffff;
   border-radius: 50%;
-  box-shadow: 0 0 12px #00faff, inset 0 0 8px #00faff;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
   pointer-events: none;
   transform: translate(-50%, -50%);
-  opacity: 0.8;
   z-index: 1000;
-  transition: width 0.2s, height 0.2s;
-}
-#glow-cursor.active {
-  width: 50px;
-  height: 50px;
-  opacity: 1;
 }
 
 
