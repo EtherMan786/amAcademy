@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>AM Academy</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Vanilla Tilt -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js"></script>
+<!-- tsParticles -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tsparticles/2.9.3/tsparticles.bundle.min.js"></script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  body {
+    overflow-x: hidden;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+  body.loaded { opacity: 1; }
+
+  /* Moving gradient background */
+  @keyframes gradientBG {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  body.dark-mode {
+    background: linear-gradient(to bottom right, #1a1b4b, #000000, #4b0082) !important;
+    background-size: 200% 200%;
+    color: #e0e0e0;
+    animation: gradientBG 10s ease infinite;
+  }
+  body.light-mode {
+    background: linear-gradient(to bottom right, #0a1f2e, #00161c) !important;
+    background-size: 200% 200%;
+    color: #e0e0e0;
+    animation: gradientBG 10s ease infinite;
+  }
+
+  /* Particles full screen behind everything */
+  #particles-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s, transform 0.8s;
+  }
+  .animate-on-scroll.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .ripple { overflow: hidden; position: relative; cursor: pointer; }
+  .ripple:after {
+    content: '';
+    position: absolute; top:50%; left:50%;
+    width:200%; height:200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.3)10%, transparent 40%);
+    opacity:0; transform: translate(-50%,-50%) scale(0); transition: transform 0.5s, opacity 1s;
+  }
+  .ripple:active:after { opacity:1; transform: translate(-50%,-50%) scale(1); transition:0s; }
+  .theme-toggle { cursor: pointer; padding:0.5rem; border-radius:50%; background: rgba(255, 255, 255, 0.1); transition: background 0.3s; }
+  .theme-toggle:hover { background: rgba(255, 255, 255, 0.3); }
+#glow-cursor {
+  position: fixed;
+  width: 32px;
+  height: 32px;
+  border: 2px solid #00faff;
+  border-radius: 50%;
+  box-shadow: 0 0 12px #00faff, inset 0 0 8px #00faff;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  opacity: 0.8;
+  z-index: 1000;
+  transition: width 0.2s, height 0.2s;
+}
+#glow-cursor.active {
+  width: 50px;
+  height: 50px;
+  opacity: 1;
+}
+
+
+</style>
+</head>
+<body class="light-mode text-black font-sans">
+<div id="glow-cursor"></div>
+<audio id="click-sound" src="https://www.myinstants.com/media/sounds/button-click.mp3"></audio>
+
+<!-- Full-screen particles -->
+<div id="particles-container"></div>
+
+<!-- Header -->
+<header class="fixed w-full z-50 bg-black/40 backdrop-blur-md p-4 shadow-xl">
+  <div class="max-w-7xl mx-auto flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-cyan-400">AM Academy</h1>
+    <nav class="hidden md:flex flex-1 justify-end space-x-8 text-white text-lg">
+      <a href="#hero" class="hover:text-cyan-400 transition">Home</a>
+      <a href="#classes" class="hover:text-cyan-400 transition">Classes</a>
+      <a href="#contact" class="hover:text-cyan-400 transition">Contact</a>
+    </nav>
+    <button id="theme-toggle" class="theme-toggle text-xl text-cyan-400 ml-4">🌙</button>
+    <button class="md:hidden text-white" onclick="toggleMenu()">
+      <svg class="w-8 h-8" viewBox="0 0 24 24" stroke="currentColor" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    </button>
+  </div>
+  <nav id="mobile-nav" class="hidden flex flex-col items-center mt-2 text-white space-y-2 bg-black/80 p-4 rounded-xl md:hidden">
+    <a href="#hero">Home</a><a href="#classes">Classes</a><a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<!-- Hero Section -->
+<section id="hero" class="h-screen flex items-center justify-center text-center relative z-10">
+  <video id="hero-video" autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover opacity-50 z-0">
+    <source data-src="https://cdn.pixabay.com/vimeo/523852936/sea-90790.mp4?width=1280" type="video/mp4" />
+  </video>
+  <div class="relative z-10 max-w-2xl flex flex-col items-center px-4">
+    <h2 class="text-5xl md:text-6xl font-extrabold text-cyan-300 mb-4">Empowering Future Minds</h2>
+    <p class="text-lg md:text-xl mb-6">Tech-forward learning for Classes 9–12, built for the digital generation.</p>
+    <a href="#classes" class="bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-8 py-3 rounded-full transition transform hover:scale-110 shadow-xl">Explore Classes</a>
+  </div>
+</section>
+
+<!-- Classes Section -->
+<section id="classes" class="py-20 px-4 relative z-10">
+  <h3 class="text-3xl text-center font-bold mb-12 animate-on-scroll">Choose Your Class</h3>
+  <div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+    <a href="class9.html" onclick="playSound()" class="glass ripple p-6 rounded-xl text-center hover:scale-110 hover:shadow-2xl cursor-pointer animate-on-scroll" data-tilt>
+      <h4 class="text-2xl font-semibold mb-2 text-cyan-300">Class 9</h4>
+      <p class="opacity-80">Foundation for high school success.</p>
+    </a>
+    <a href="class10.html" onclick="playSound()" class="glass ripple p-6 rounded-xl text-center hover:scale-110 hover:shadow-2xl cursor-pointer animate-on-scroll" data-tilt>
+      <h4 class="text-2xl font-semibold mb-2 text-pink-400">Class 10</h4>
+      <p class="opacity-80">Level up for board exams.</p>
+    </a>
+    <a href="class11.html" onclick="playSound()" class="glass ripple p-6 rounded-xl text-center hover:scale-110 hover:shadow-2xl cursor-pointer animate-on-scroll" data-tilt>
+      <h4 class="text-2xl font-semibold mb-2 text-green-400">Class 11</h4>
+      <p class="opacity-80">Begin your specialization journey.</p>
+    </a>
+    <a href="class12.html" onclick="playSound()" class="glass ripple p-6 rounded-xl text-center hover:scale-110 hover:shadow-2xl cursor-pointer animate-on-scroll" data-tilt>
+      <h4 class="text-2xl font-semibold mb-2 text-yellow-300">Class 12</h4>
+      <p class="opacity-80">Ace your finals with smart tools.</p>
+    </a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer id="contact" class="text-center text-sm py-6 border-t border-cyan-600 mt-10 animate-on-scroll opacity-80 relative z-10">
+  &copy; 2025 FutureLearn Academy. Built for tomorrow.
+</footer>
+
+<script>
+  function playSound() {
+    const sound = document.getElementById('click-sound')
+    sound.currentTime = 0; sound.play().catch(() => {})
+  }
+  function toggleMenu() { document.getElementById('mobile-nav').classList.toggle('hidden') }
+
+  const themeToggle = document.getElementById('theme-toggle')
+  const savedTheme = localStorage.getItem('theme')
+  if (savedTheme === 'dark') document.body.classList.replace('light-mode', 'dark-mode')
+  themeToggle.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙'
+  themeToggle.addEventListener('click', () => {
+    if (document.body.classList.contains('dark-mode')) {
+      document.body.classList.replace('dark-mode', 'light-mode')
+      themeToggle.textContent = '🌙'; localStorage.setItem('theme','light')
+    } else {
+      document.body.classList.replace('light-mode', 'dark-mode')
+      themeToggle.textContent = '☀️'; localStorage.setItem('theme','dark')
+    }
+  })
+
+  const elements=document.querySelectorAll('.animate-on-scroll')
+  const observer=new IntersectionObserver((entries)=>{ entries.forEach(entry=>{ if(entry.isIntersecting) entry.target.classList.add('active') }) })
+  elements.forEach(el=>observer.observe(el))
+
+  new IntersectionObserver((entries)=> {
+    if(entries[0].isIntersecting){
+      const heroSource=document.querySelector('#hero-video source')
+      heroSource.src=heroSource.dataset.src; document.getElementById('hero-video').load()
+    }
+  }).observe(document.getElementById('hero-video'))
+
+  // Particles full screen
+  tsParticles.load('particles-container', {
+    fullScreen:{enable:false},
+    particles:{number:{value:70},color:{value:'#00FFFF'},move:{enable:true,speed:1},size:{value:2},opacity:{value:0.5}}
+  })
+  VanillaTilt.init(document.querySelectorAll("[data-tilt]"), { max:10,speed:400 })
+  window.addEventListener('load',()=>document.body.classList.add('loaded'))
+</script>
+<script>
+  const glowCursor = document.getElementById('glow-cursor');
+
+  document.addEventListener('mousemove', (e) => {
+    glowCursor.style.left = e.clientX + 'px';
+    glowCursor.style.top = e.clientY + 'px';
+  });
+
+  // Optional: Change color on click
+  document.addEventListener('mousedown', () => {
+    glowCursor.style.background = 'rgba(255, 0, 200, 0.8)';
+    glowCursor.style.boxShadow = '0 0 20px 10px rgba(255, 0, 200, 0.4), 0 0 40px 20px rgba(255, 0, 200, 0.2)';
+  });
+  document.addEventListener('mouseup', () => {
+    glowCursor.style.background = 'rgba(0, 255, 255, 0.8)';
+    glowCursor.style.boxShadow = '0 0 20px 10px rgba(0, 255, 255, 0.4), 0 0 40px 20px rgba(0, 255, 255, 0.2)';
+  });
+document.addEventListener('mousemove', e => {
+  glowCursor.style.left = e.clientX + 'px';
+  glowCursor.style.top = e.clientY + 'px';
+  
+  const ring = document.createElement('div');
+  ring.style.position = 'fixed';
+  ring.style.left = e.clientX + 'px';
+  ring.style.top = e.clientY + 'px';
+  ring.style.width = '10px';
+  ring.style.height = '10px';
+  ring.style.border = '2px solid #00ffff';
+  ring.style.borderRadius = '50%';
+  ring.style.pointerEvents = 'none';
+  ring.style.transform = 'translate(-50%, -50%) scale(1)';
+  ring.style.opacity = '0.5';
+  ring.style.transition = 'all 0.5s ease-out';
+  document.body.appendChild(ring);
+  
+  setTimeout(() => {
+    ring.style.transform = 'translate(-50%, -50%) scale(3)';
+    ring.style.opacity = '0';
+  }, 10);
+  
+  setTimeout(() => ring.remove(), 500);
+});
+
+
+
+
+</script>
+
+</body>
+</html>
